@@ -1,78 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'/>
-    <!-- <meta charset='utf-8' http-equiv='refresh' content='50'/> -->
-    <title>Triangles!</title>
+<head>
+<meta charset='utf-8'/>
+<!-- <meta charset='utf-8' http-equiv='refresh' content='50'/> -->
+<title>Triangles!</title>
 
-    <script type='text/javascript'>
+<style type='text/css'>
+/*canvas { border: 1px solid black; }*/
+</style>
 
-      function run() {
-        setCanvasSize();
-        var triangle = drawTriangle();
-        var coordinates = drawInitialPoint();
-        drawNextPoint(triangle, coordinates);
-      }
+</head>
+<body>
+<script type='text/javascript'>
 
-      function setCanvasSize() {
-        var canvas = document.getElementById('triangles');
-        canvas.height = window.innerHeight - 22
-        canvas.width = window.innerWidth - 18
-      }
+// create and attach the canvas
+const canvas = document.createElement('canvas')
+canvas.width = 800
+canvas.height = 600
+document.body.appendChild(canvas)
 
-      function drawTriangle() {
-        var canvas = document.getElementById('triangles');
-        var triangle = {
-          top_vertex: {x: canvas.width / 2, y: 0},
-          left_vertex: {x: 0, y: canvas.height},
-          right_vertex: {x: canvas.width, y: canvas.height}
-        };
+const ctx = canvas.getContext('2d')
 
-        var ctx = canvas.getContext('2d')
-        ctx.beginPath();
-        ctx.moveTo(triangle.top_vertex.x, triangle.top_vertex.y);
-        ctx.lineTo(triangle.left_vertex.x, triangle.left_vertex.y);
-        ctx.lineTo(triangle.right_vertex.x, triangle.right_vertex.y);
-        ctx.closePath();
-        ctx.stroke();
+// define the triangle
+const triangle = {
+  top_vertex: {x: canvas.width / 2, y: 0},
+  left_vertex: {x: 0, y: canvas.height},
+  right_vertex: {x: canvas.width, y: canvas.height}
+}
 
-        return triangle;
-      }
+// draw the triangle to the canvas
+drawTriangle(triangle)
 
-      function drawInitialPoint() {
-        var ctx = document.getElementById('triangles').getContext('2d')
-        var coordinates = {
-          x: document.getElementById('triangles').width * Math.random(),
-          y: document.getElementById('triangles').height * Math.random()
-        };
-        ctx.fillRect(coordinates.x, coordinates.y, 1, 1);
-        return coordinates;
-      }
+// create our coordinate variables
+let x = 0
+let y = 0
 
-      function drawNextPoint(triangle, coordinates) {
-        var vertices = [triangle.top_vertex, triangle.left_vertex, triangle.right_vertex];
-        var random_vertex = vertices[Math.floor(Math.random() * vertices.length)];
-        var midpoint = {
-          x: ((coordinates.x + random_vertex.x) / 2.0),
-          y: ((coordinates.y + random_vertex.y) / 2.0)
-        };
+// add event listener to respond to mouse click and set initial coordinates
+document.addEventListener('click', (event) => {
+  x = event.x
+  y = event.y
+  setInterval(run, 10)
+})
 
-        var ctx = document.getElementById('triangles').getContext('2d');
-        ctx.fillRect(midpoint.x, midpoint.y, 1, 1);
+function drawTriangle(triangle) {
+  ctx.beginPath()
+  ctx.moveTo(triangle.top_vertex.x, triangle.top_vertex.y)
+  ctx.lineTo(triangle.left_vertex.x, triangle.left_vertex.y)
+  ctx.lineTo(triangle.right_vertex.x, triangle.right_vertex.y)
+  ctx.closePath()
+  ctx.stroke()
+}
 
-        setTimeout(drawNextPoint, 100, triangle, midpoint);
-      }
+function drawPoint(){
+  ctx.fillRect(x, y, 1, 1)
+}
 
-    </script>
+function setNextCoordinates() {
+  const vertices = [triangle.top_vertex, triangle.left_vertex, triangle.right_vertex]
+  const random_vertex = vertices[Math.floor(Math.random() * vertices.length)]
+  x = ((x + random_vertex.x) / 2.0)
+  y = ((y + random_vertex.y) / 2.0)
+}
 
-    <style type='text/css'>
-      /*canvas { border: 1px solid black; }*/
-    </style>
+function run() {
+  drawPoint()
+  setNextCoordinates()
+}
 
-  </head>
-  <body onload='run();'>
-
-    <canvas id='triangles' width='220' height='193'></canvas>
-
-  </body>
+</script>
+</body>
 </html>
